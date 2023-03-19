@@ -39,10 +39,8 @@ const server = new ApolloServer({
   resolvers,
 });
 
-async function getUrl() {
-  const { url } = await startStandaloneServer(server, {
-    listen: { port: 4000 },
-  });
-  console.log(`🚀  Server ready at: ${url}`);
-}
-getUrl();
+startStandaloneServer(server, {
+  listen: { port: 4000 },
+});
+
+module.exports = { resolvers, typeDefs };

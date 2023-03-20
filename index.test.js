@@ -38,9 +38,35 @@ test("the list can be sorted by date in ascending order", async () => {
         location
       }
     }`,
-    BucketOrderByInput: {
+    variables: {
       order: {
         creationDate: "asc",
+      },
+    },
+  });
+  const buckets = response.body.singleResult.data?.buckets;
+  buckets.forEach((element, index) => {
+    if (index > 0 && index < buckets.length) {
+      expect(getDateInMs(element.creationDate)).toBeGreaterThanOrEqual(
+        getDateInMs(buckets[index - 1]?.creationDate)
+      );
+    }
+  });
+});
+
+test("the list can be sorted by date in descending order", async () => {
+  const response = await server.executeOperation({
+    query: `query test($order: BucketOrderByInput) {
+      buckets(order: $order) {
+        name, 
+        creationDate, 
+        link, 
+        location
+      }
+    }`,
+    variables: {
+      order: {
+        creationDate: "desc",
       },
     },
   });

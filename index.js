@@ -16,6 +16,10 @@ const buckets = [
   },
 ];
 
+const getDateInMs = (dateIso) => {
+  return new Date(dateIso).getTime();
+};
+
 const typeDefs = `#graphql
   type Bucket {
     name: String
@@ -23,14 +27,28 @@ const typeDefs = `#graphql
     location: String
     link: String
   }
+  enum Sort {
+    asc
+    desc
+  }
+  input BucketOrderByInput {
+    creationDate: Sort
+    name: Sort
+  }
   type Query {
-    buckets: [Bucket]
+    buckets(order: BucketOrderByInput): [Bucket]
   }
 `;
 
 const resolvers = {
   Query: {
-    buckets: () => buckets,
+    buckets: (parent, args, contextValue, info) => {
+      if (args.order == undefined) {
+        return buckets;
+      } else {
+        return buckets;
+      }
+    },
   },
 };
 

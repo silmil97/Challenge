@@ -28,6 +28,30 @@ const compareDateDesc = (a, b) => {
   return getDateInMs(b.creationDate) - getDateInMs(a.creationDate);
 };
 
+const compareNameAsc = (a, b) => {
+  const nameA = a.name.toUpperCase();
+  const nameB = b.name.toUpperCase();
+  if (nameA < nameB) {
+    return -1;
+  }
+  if (nameA > nameB) {
+    return 1;
+  }
+  return 0;
+};
+
+const compareNameDesc = (a, b) => {
+  const nameA = a.name.toUpperCase();
+  const nameB = b.name.toUpperCase();
+  if (nameA < nameB) {
+    return 1;
+  }
+  if (nameA > nameB) {
+    return -1;
+  }
+  return 0;
+};
+
 const typeDefs = `#graphql
   type Bucket {
     name: String
@@ -61,10 +85,10 @@ const resolvers = {
         return buckets.sort(compareDateDesc);
       }
       if (args.order.name == "asc") {
-        return buckets;
+        return buckets.sort(compareNameAsc);
       }
       if (args.order.name == "desc") {
-        return buckets;
+        return buckets.sort(compareDateDesc);
       }
     },
   },
@@ -79,4 +103,4 @@ startStandaloneServer(server, {
   listen: { port: 4000 },
 });
 
-module.exports = { resolvers, typeDefs };
+module.exports = { resolvers, typeDefs, server };

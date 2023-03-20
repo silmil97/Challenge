@@ -1,5 +1,6 @@
 const { typeDefs, resolvers, server } = require("./index.js");
 const { ApolloServer } = require("@apollo/server");
+const { getDateInMs } = require("./functions.js");
 
 it("bucket list returns all needed fields", async () => {
   const testServer = new ApolloServer({
@@ -27,9 +28,9 @@ it("bucket list returns all needed fields", async () => {
   expect(response.body.singleResult.errors).toBeUndefined();
 });
 
-test("the list can be in order", async () => {
+test("the list can be sorted by date in ascending order", async () => {
   const response = await server.executeOperation({
-    query: `query test($order: ) {
+    query: `query test($order: BucketOrderByInput) {
       buckets(order: $order) {
         name, 
         creationDate, 
@@ -37,5 +38,18 @@ test("the list can be in order", async () => {
         location
       }
     }`,
+    BucketOrderByInput: {
+      order: {
+        creationDate: "asc",
+      },
+    },
+  });
+  const buckets = response.body.singleResult.data?.buckets;
+  buckets.forEach((element, index) => {
+    if (index > 0 && index < buckets.length) {
+      expect(getDateInMs(element.creationDate)).toBeLessThanOrEqual(
+        getDateInMs(buckets[index - 1]?.creationDate)
+      );
+    }
   });
 });

@@ -1,5 +1,11 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
+const {
+  compareDateAsc,
+  compareDateDesc,
+  compareNameAsc,
+  compareNameDesc,
+} = require("./functions");
 
 const buckets = [
   {
@@ -15,42 +21,6 @@ const buckets = [
     link: "",
   },
 ];
-
-const getDateInMs = (dateIso) => {
-  return new Date(dateIso).getTime();
-};
-
-const compareDateAsc = (a, b) => {
-  return getDateInMs(a.creationDate) - getDateInMs(b.creationDate);
-};
-
-const compareDateDesc = (a, b) => {
-  return getDateInMs(b.creationDate) - getDateInMs(a.creationDate);
-};
-
-const compareNameAsc = (a, b) => {
-  const nameA = a.name.toUpperCase();
-  const nameB = b.name.toUpperCase();
-  if (nameA < nameB) {
-    return -1;
-  }
-  if (nameA > nameB) {
-    return 1;
-  }
-  return 0;
-};
-
-const compareNameDesc = (a, b) => {
-  const nameA = a.name.toUpperCase();
-  const nameB = b.name.toUpperCase();
-  if (nameA < nameB) {
-    return 1;
-  }
-  if (nameA > nameB) {
-    return -1;
-  }
-  return 0;
-};
 
 const typeDefs = `#graphql
   type Bucket {
@@ -88,7 +58,7 @@ const resolvers = {
         return buckets.sort(compareNameAsc);
       }
       if (args.order.name == "desc") {
-        return buckets.sort(compareDateDesc);
+        return buckets.sort(compareNameDesc);
       }
     },
   },

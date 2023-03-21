@@ -79,3 +79,27 @@ test("the list can be sorted by date in descending order", async () => {
     }
   });
 });
+
+test("the list can be sorted by name in ascending order", async () => {
+  const response = await server.executeOperation({
+    query: `query test($order: BucketOrderByInput) {
+      buckets(order: $order) {
+        name, 
+        creationDate, 
+        link, 
+        location
+      }
+    }`,
+    variables: {
+      order: {
+        name: "asc",
+      },
+    },
+  });
+  const buckets = response.body.singleResult.data?.buckets;
+  buckets.forEach((element, index) => {
+    if (index > 0 && index < buckets.length) {
+      expect(element.name.localeCompare(buckets[index - 1]?.name)).toBe(1);
+    }
+  });
+});

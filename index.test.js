@@ -115,3 +115,36 @@ test("the list can be sorted by name in descending order", async () => {
     }
   });
 });
+
+test("limit and offset can be set", async () => {
+  const offsetResponse = await server.executeOperation({
+    query: `query test($order: BucketOrderByInput, $offset: Int, $limit: Int) {
+      buckets(order: $order, offset: $offset, limit: $limit) {
+        name
+      }
+    }`,
+    variables: {
+      order: {
+        name: "desc",
+      },
+      limit: 5,
+      offset: 2,
+    },
+  });
+  const response = await server.executeOperation({
+    query: `query test($order: BucketOrderByInput) {
+      buckets(order: $order) {
+        name
+      }
+    }`,
+    variables: {
+      order: {
+        name: "desc",
+      },
+    },
+  });
+  const offsetBuckets = offsetResponse.body.singleResult.data?.buckets;
+  const buckets = response.body.singleResult.data?.buckets;
+  expect(offsetBuckets.length).toBe(5);
+  expect(offsetBuckets[0].name).toBe(buckets[2].name);
+});

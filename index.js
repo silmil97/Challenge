@@ -5,6 +5,7 @@ const {
   compareDateDesc,
   compareNameAsc,
   compareNameDesc,
+  offsetLimitLoop,
 } = require("./functions");
 
 const buckets = [
@@ -98,26 +99,60 @@ const typeDefs = `#graphql
     name: Sort
   }
   type Query {
-    buckets(order: BucketOrderByInput): [Bucket]
+    buckets(order: BucketOrderByInput, offset: Int, limit: Int): [Bucket]
   }
 `;
 
 const resolvers = {
   Query: {
     buckets: (parent, args, contextValue, info) => {
+      if (buckets.length <= args.offset) {
+        throw new Error("Offset bigger than list");
+      }
       if (args.order == undefined) {
+        if (!!args.offset || !!args.limit) {
+          return offsetLimitLoop(args.offset, args.limit, buckets);
+        }
         return buckets;
       }
       if (args.order.creationDate == "asc") {
+        if (!!args.offset || !!args.limit) {
+          return offsetLimitLoop(
+            args.offset,
+            args.limit,
+            buckets.sort(compareDateAsc)
+          );
+        }
         return buckets.sort(compareDateAsc);
       }
       if (args.order.creationDate == "desc") {
+        if (!!args.offset || !!args.limit) {
+          return offsetLimitLoop(
+            args.offset,
+            args.limit,
+            buckets.sort(compareDateDesc)
+          );
+        }
         return buckets.sort(compareDateDesc);
       }
       if (args.order.name == "asc") {
+        if (!!args.offset || !!args.limit) {
+          return offsetLimitLoop(
+            args.offset,
+            args.limit,
+            buckets.sort(compareNameAsc)
+          );
+        }
         return buckets.sort(compareNameAsc);
       }
       if (args.order.name == "desc") {
+        if (!!args.offset || !!args.limit) {
+          return offsetLimitLoop(
+            args.offset,
+            args.limit,
+            buckets.sort(compareNameDesc)
+          );
+        }
         return buckets.sort(compareNameDesc);
       }
     },

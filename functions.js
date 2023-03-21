@@ -34,7 +34,21 @@ const compareNameDesc = (a, b) => {
   return 0;
 };
 
+const offsetLimitLoop = (offset, limit, buckets) => {
+  const result = [];
+  for (let i = 0; i <= buckets.length; i++) {
+    if (i >= offset || !offset) {
+      result.push(buckets[i]);
+    }
+    if (limit && result.length === limit) {
+      break;
+    }
+  }
+  return result;
+};
+
 module.exports = {
+  offsetLimitLoop,
   getDateInMs,
   compareDateAsc,
   compareDateDesc,

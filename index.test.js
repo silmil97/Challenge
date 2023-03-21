@@ -32,10 +32,7 @@ test("the list can be sorted by date in ascending order", async () => {
   const response = await server.executeOperation({
     query: `query test($order: BucketOrderByInput) {
       buckets(order: $order) {
-        name, 
-        creationDate, 
-        link, 
-        location
+        creationDate,
       }
     }`,
     variables: {
@@ -58,10 +55,7 @@ test("the list can be sorted by date in descending order", async () => {
   const response = await server.executeOperation({
     query: `query test($order: BucketOrderByInput) {
       buckets(order: $order) {
-        name, 
-        creationDate, 
-        link, 
-        location
+        creationDate
       }
     }`,
     variables: {
@@ -84,10 +78,7 @@ test("the list can be sorted by name in ascending order", async () => {
   const response = await server.executeOperation({
     query: `query test($order: BucketOrderByInput) {
       buckets(order: $order) {
-        name, 
-        creationDate, 
-        link, 
-        location
+        name,
       }
     }`,
     variables: {
@@ -108,10 +99,7 @@ test("the list can be sorted by name in descending order", async () => {
   const response = await server.executeOperation({
     query: `query test($order: BucketOrderByInput) {
       buckets(order: $order) {
-        name, 
-        creationDate, 
-        link, 
-        location
+        name
       }
     }`,
     variables: {

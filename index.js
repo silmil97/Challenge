@@ -109,14 +109,14 @@ const resolvers = {
       if (buckets.length <= args.offset) {
         throw new Error("Offset bigger than list");
       }
-      if (!!args.order.creationDate && !!args.order.name) {
-        throw new Error("You can just sort by one criteria");
-      }
       if (args.order == undefined) {
         if (!!args.offset || !!args.limit) {
           return offsetLimitLoop(args.offset, args.limit, buckets);
         }
         return buckets;
+      }
+      if (!!args.order.creationDate && !!args.order.name) {
+        throw new Error("You can just sort by one criteria");
       }
       if (args.order.creationDate == "asc") {
         if (!!args.offset || !!args.limit) {

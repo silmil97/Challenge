@@ -1,6 +1,8 @@
-const { typeDefs, resolvers, server } = require("./index.js");
+const { server } = require("../index.js");
+const { resolvers } = require("../src/resolvers.js");
+const { typeDefs } = require("../src/typeDefs.js");
 const { ApolloServer } = require("@apollo/server");
-const { getDateInMs } = require("./functions.js");
+const { getDateInMs } = require("../src/functions.js");
 
 it("bucket list returns all needed fields", async () => {
   const testServer = new ApolloServer({
@@ -10,7 +12,7 @@ it("bucket list returns all needed fields", async () => {
 
   const response = await testServer.executeOperation({
     query: `query test {
-      buckets {
+      bucket {
         name, 
         creationDate, 
         link, 
@@ -19,7 +21,7 @@ it("bucket list returns all needed fields", async () => {
     }`,
   });
 
-  response.body.singleResult.data?.buckets.map((element) => {
+  response.body.singleResult.data?.bucket.map((element) => {
     expect(element.name).toBeDefined();
     expect(element.creationDate).toBeDefined();
     expect(element.link).toBeDefined();
@@ -31,7 +33,7 @@ it("bucket list returns all needed fields", async () => {
 test("the list can be sorted by date in ascending order", async () => {
   const response = await server.executeOperation({
     query: `query test($order: BucketOrderByInput) {
-      buckets(order: $order) {
+      bucket(order: $order) {
         creationDate,
       }
     }`,
@@ -41,11 +43,11 @@ test("the list can be sorted by date in ascending order", async () => {
       },
     },
   });
-  const buckets = response.body.singleResult.data?.buckets;
-  buckets.forEach((element, index) => {
-    if (index > 0 && index < buckets.length) {
+  const bucket = response.body.singleResult.data?.bucket;
+  bucket.forEach((element, index) => {
+    if (index > 0 && index < bucket.length) {
       expect(getDateInMs(element.creationDate)).toBeGreaterThanOrEqual(
-        getDateInMs(buckets[index - 1]?.creationDate)
+        getDateInMs(bucket[index - 1]?.creationDate)
       );
     }
   });
@@ -54,7 +56,7 @@ test("the list can be sorted by date in ascending order", async () => {
 test("the list can be sorted by date in descending order", async () => {
   const response = await server.executeOperation({
     query: `query test($order: BucketOrderByInput) {
-      buckets(order: $order) {
+      bucket(order: $order) {
         creationDate
       }
     }`,
@@ -64,11 +66,11 @@ test("the list can be sorted by date in descending order", async () => {
       },
     },
   });
-  const buckets = response.body.singleResult.data?.buckets;
-  buckets.forEach((element, index) => {
-    if (index > 0 && index < buckets.length) {
+  const bucket = response.body.singleResult.data?.bucket;
+  bucket.forEach((element, index) => {
+    if (index > 0 && index < bucket.length) {
       expect(getDateInMs(element.creationDate)).toBeLessThanOrEqual(
-        getDateInMs(buckets[index - 1]?.creationDate)
+        getDateInMs(bucket[index - 1]?.creationDate)
       );
     }
   });
@@ -77,7 +79,7 @@ test("the list can be sorted by date in descending order", async () => {
 test("the list can be sorted by name in ascending order", async () => {
   const response = await server.executeOperation({
     query: `query test($order: BucketOrderByInput) {
-      buckets(order: $order) {
+      bucket(order: $order) {
         name,
       }
     }`,
@@ -87,10 +89,10 @@ test("the list can be sorted by name in ascending order", async () => {
       },
     },
   });
-  const buckets = response.body.singleResult.data?.buckets;
-  buckets.forEach((element, index) => {
-    if (index > 0 && index < buckets.length) {
-      expect(element.name.localeCompare(buckets[index - 1]?.name)).toBe(1);
+  const bucket = response.body.singleResult.data?.bucket;
+  bucket.forEach((element, index) => {
+    if (index > 0 && index < bucket.length) {
+      expect(element.name.localeCompare(bucket[index - 1]?.name)).toBe(1);
     }
   });
 });
@@ -98,7 +100,7 @@ test("the list can be sorted by name in ascending order", async () => {
 test("the list can be sorted by name in descending order", async () => {
   const response = await server.executeOperation({
     query: `query test($order: BucketOrderByInput) {
-      buckets(order: $order) {
+      bucket(order: $order) {
         name
       }
     }`,
@@ -108,10 +110,10 @@ test("the list can be sorted by name in descending order", async () => {
       },
     },
   });
-  const buckets = response.body.singleResult.data?.buckets;
-  buckets.forEach((element, index) => {
-    if (index > 0 && index < buckets.length) {
-      expect(element.name.localeCompare(buckets[index - 1]?.name)).toBe(-1);
+  const bucket = response.body.singleResult.data?.bucket;
+  bucket.forEach((element, index) => {
+    if (index > 0 && index < bucket.length) {
+      expect(element.name.localeCompare(bucket[index - 1]?.name)).toBe(-1);
     }
   });
 });
@@ -119,7 +121,7 @@ test("the list can be sorted by name in descending order", async () => {
 test("limit and offset can be set", async () => {
   const offsetResponse = await server.executeOperation({
     query: `query test($order: BucketOrderByInput, $offset: Int, $limit: Int) {
-      buckets(order: $order, offset: $offset, limit: $limit) {
+      bucket(order: $order, offset: $offset, limit: $limit) {
         name
       }
     }`,
@@ -133,7 +135,7 @@ test("limit and offset can be set", async () => {
   });
   const response = await server.executeOperation({
     query: `query test($order: BucketOrderByInput) {
-      buckets(order: $order) {
+      bucket(order: $order) {
         name
       }
     }`,
@@ -143,8 +145,8 @@ test("limit and offset can be set", async () => {
       },
     },
   });
-  const offsetBuckets = offsetResponse.body.singleResult.data?.buckets;
-  const buckets = response.body.singleResult.data?.buckets;
+  const offsetBuckets = offsetResponse.body.singleResult.data?.bucket;
+  const bucket = response.body.singleResult.data?.bucket;
   expect(offsetBuckets.length).toBe(5);
-  expect(offsetBuckets[0].name).toBe(buckets[2].name);
+  expect(offsetBuckets[0].name).toBe(bucket[2].name);
 });

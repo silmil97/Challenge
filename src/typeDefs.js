@@ -1,5 +1,5 @@
 const typeDefs = `#graphql
-  type Bucket {
+  type Object {
     name: String
     creationDate: String
     location: String
@@ -14,7 +14,7 @@ const typeDefs = `#graphql
     name: Sort
   }
   type Query {
-    bucket(order: BucketOrderByInput, offset: Int, limit: Int): [Bucket]
+    bucket(order: BucketOrderByInput, offset: Int, limit: Int): [Object]
   }
 `;
 module.exports = { typeDefs };

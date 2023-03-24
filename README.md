@@ -10,7 +10,9 @@ Install the node modules:
 npm install
 ```
 
-2. ### Run or Test the Code
+2. ### Make sure to have your Credintials configured (aws configure for windows)
+
+3. ### Run or Test the Code
 
 ```bash
 npm start

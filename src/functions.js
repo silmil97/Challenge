@@ -3,16 +3,16 @@ const getDateInMs = (dateIso) => {
 };
 
 const compareDateAsc = (a, b) => {
-  return getDateInMs(a.creationDate) - getDateInMs(b.creationDate);
+  return a.LastModified - b.LastModified;
 };
 
 const compareDateDesc = (a, b) => {
-  return getDateInMs(b.creationDate) - getDateInMs(a.creationDate);
+  return b.LastModified - a.LastModified;
 };
 
 const compareNameAsc = (a, b) => {
-  const nameA = a.name.toUpperCase();
-  const nameB = b.name.toUpperCase();
+  const nameA = a.Key.toUpperCase();
+  const nameB = b.Key.toUpperCase();
   if (nameA < nameB) {
     return -1;
   }
@@ -23,8 +23,8 @@ const compareNameAsc = (a, b) => {
 };
 
 const compareNameDesc = (a, b) => {
-  const nameA = a.name.toUpperCase();
-  const nameB = b.name.toUpperCase();
+  const nameA = a.Key.toUpperCase();
+  const nameB = b.Key.toUpperCase();
   if (nameA < nameB) {
     return 1;
   }
@@ -35,16 +35,19 @@ const compareNameDesc = (a, b) => {
 };
 
 const offsetLimitLoop = (offset, limit, buckets) => {
-  const result = [];
-  for (let i = 0; i <= buckets.length; i++) {
-    if (i >= offset || !offset) {
-      result.push(buckets[i]);
+  buckets.then((data) => {
+    const result = [];
+    for (let i = 0; i <= data.length; i++) {
+      if (i >= offset || !offset) {
+        result.push(data[i]);
+      }
+      if (limit && result.length === limit) {
+        break;
+      }
     }
-    if (limit && result.length === limit) {
-      break;
-    }
-  }
-  return result;
+    // console.log(result)
+    return result;
+  });
 };
 
 module.exports = {

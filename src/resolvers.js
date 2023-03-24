@@ -5,11 +5,14 @@ const {
   compareNameDesc,
   offsetLimitLoop,
 } = require("./functions");
-const { bucket } = require("../mock/bucket");
+// const { bucket } = require("../mock/bucket");
+const { getBucket } = require("./getBucket");
 
+const bucket = getBucket();
 const resolvers = {
   Query: {
     bucket: (parent, args, contextValue, info) => {
+      // bucket.then(data => console.log(data))
       if (bucket.length <= args.offset) {
         throw new Error("Offset bigger than list");
       }
@@ -19,48 +22,33 @@ const resolvers = {
         }
         return bucket;
       }
-      if (!!args.order.creationDate && !!args.order.name) {
+      if (!!args.order.LastModified && !!args.order.Key) {
         throw new Error("You can just sort by one criteria");
       }
-      if (args.order.creationDate == "asc") {
+      if (args.order.LastModified == "asc") {
         if (!!args.offset || !!args.limit) {
-          return offsetLimitLoop(
-            args.offset,
-            args.limit,
-            bucket.sort(compareDateAsc)
-          );
+          return offsetLimitLoop(args.offset, args.limit, bucket);
         }
-        return bucket.sort(compareDateAsc);
+        return bucket.then((data) => data.sort(compareDateAsc));
       }
-      if (args.order.creationDate == "desc") {
+      if (args.order.LastModified == "desc") {
         if (!!args.offset || !!args.limit) {
-          return offsetLimitLoop(
-            args.offset,
-            args.limit,
-            bucket.sort(compareDateDesc)
-          );
+          return offsetLimitLoop(args.offset, args.limit, bucket);
         }
-        return bucket.sort(compareDateDesc);
+        return bucket.then((data) => data.sort(compareDateDesc));
       }
-      if (args.order.name == "asc") {
+      if (args.order.Key == "asc") {
         if (!!args.offset || !!args.limit) {
-          return offsetLimitLoop(
-            args.offset,
-            args.limit,
-            bucket.sort(compareNameAsc)
-          );
+          return offsetLimitLoop(args.offset, args.limit, bucket);
         }
-        return bucket.sort(compareNameAsc);
+        return bucket.then((data) => data.sort(compareNameAsc));
       }
-      if (args.order.name == "desc") {
+      if (args.order.Key == "desc") {
         if (!!args.offset || !!args.limit) {
-          return offsetLimitLoop(
-            args.offset,
-            args.limit,
-            bucket.sort(compareNameDesc)
-          );
+          console.log(offsetLimitLoop(args.offset, args.limit, bucket));
+          return offsetLimitLoop(args.offset, args.limit, bucket);
         }
-        return bucket.sort(compareNameDesc);
+        return bucket.then((data) => data.sort(compareNameDesc));
       }
     },
   },

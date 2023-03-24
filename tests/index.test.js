@@ -13,19 +13,17 @@ it("bucket list returns all needed fields", async () => {
   const response = await testServer.executeOperation({
     query: `query test {
       bucket {
-        name, 
-        creationDate, 
-        link, 
-        location
+        Key, 
+        LastModified, 
+         
+        
       }
     }`,
   });
 
   response.body.singleResult.data?.bucket.map((element) => {
-    expect(element.name).toBeDefined();
-    expect(element.creationDate).toBeDefined();
-    expect(element.link).toBeDefined();
-    expect(element.location).toBeDefined();
+    expect(element.Key).toBeDefined();
+    expect(element.LastModified).toBeDefined();
   });
   expect(response.body.singleResult.errors).toBeUndefined();
 });
@@ -34,20 +32,20 @@ test("the list can be sorted by date in ascending order", async () => {
   const response = await server.executeOperation({
     query: `query test($order: BucketOrderByInput) {
       bucket(order: $order) {
-        creationDate,
+        LastModified,
       }
     }`,
     variables: {
       order: {
-        creationDate: "asc",
+        LastModified: "asc",
       },
     },
   });
   const bucket = response.body.singleResult.data?.bucket;
   bucket.forEach((element, index) => {
     if (index > 0 && index < bucket.length) {
-      expect(getDateInMs(element.creationDate)).toBeGreaterThanOrEqual(
-        getDateInMs(bucket[index - 1]?.creationDate)
+      expect(+element.LastModified).toBeGreaterThanOrEqual(
+        +bucket[index - 1]?.LastModified
       );
     }
   });
@@ -57,63 +55,63 @@ test("the list can be sorted by date in descending order", async () => {
   const response = await server.executeOperation({
     query: `query test($order: BucketOrderByInput) {
       bucket(order: $order) {
-        creationDate
+        LastModified
       }
     }`,
     variables: {
       order: {
-        creationDate: "desc",
+        LastModified: "desc",
       },
     },
   });
   const bucket = response.body.singleResult.data?.bucket;
   bucket.forEach((element, index) => {
     if (index > 0 && index < bucket.length) {
-      expect(getDateInMs(element.creationDate)).toBeLessThanOrEqual(
-        getDateInMs(bucket[index - 1]?.creationDate)
+      expect(+element.LastModified).toBeLessThanOrEqual(
+        +bucket[index - 1]?.LastModified
       );
     }
   });
 });
 
-test("the list can be sorted by name in ascending order", async () => {
+test("the list can be sorted by Key in ascending order", async () => {
   const response = await server.executeOperation({
     query: `query test($order: BucketOrderByInput) {
       bucket(order: $order) {
-        name,
+        Key,
       }
     }`,
     variables: {
       order: {
-        name: "asc",
+        Key: "asc",
       },
     },
   });
   const bucket = response.body.singleResult.data?.bucket;
   bucket.forEach((element, index) => {
     if (index > 0 && index < bucket.length) {
-      expect(element.name.localeCompare(bucket[index - 1]?.name)).toBe(1);
+      expect(element.Key.localeCompare(bucket[index - 1]?.Key)).toBe(1);
     }
   });
 });
 
-test("the list can be sorted by name in descending order", async () => {
+test("the list can be sorted by Key in descending order", async () => {
   const response = await server.executeOperation({
     query: `query test($order: BucketOrderByInput) {
       bucket(order: $order) {
-        name
+        Key
       }
     }`,
     variables: {
       order: {
-        name: "desc",
+        Key: "desc",
       },
     },
   });
   const bucket = response.body.singleResult.data?.bucket;
   bucket.forEach((element, index) => {
     if (index > 0 && index < bucket.length) {
-      expect(element.name.localeCompare(bucket[index - 1]?.name)).toBe(-1);
+      expect(element.Key.localeCompare(bucket[index - 1]?.Key)).toBe(-1);
     }
   });
 });
@@ -122,31 +120,32 @@ test("limit and offset can be set", async () => {
   const offsetResponse = await server.executeOperation({
     query: `query test($order: BucketOrderByInput, $offset: Int, $limit: Int) {
       bucket(order: $order, offset: $offset, limit: $limit) {
-        name
+        Key
       }
     }`,
     variables: {
       order: {
-        name: "desc",
+        Key: "desc",
       },
-      limit: 5,
-      offset: 2,
+      limit: 2,
+      offset: 1,
     },
   });
   const response = await server.executeOperation({
     query: `query test($order: BucketOrderByInput) {
       bucket(order: $order) {
-        name
+        Key
       }
     }`,
     variables: {
       order: {
-        name: "desc",
+        Key: "desc",
       },
     },
   });
   const offsetBuckets = offsetResponse.body.singleResult.data?.bucket;
   const bucket = response.body.singleResult.data?.bucket;
-  expect(offsetBuckets.length).toBe(5);
-  expect(offsetBuckets[0].name).toBe(bucket[2].name);
+  // console.log(offsetResponse)
+  expect(offsetBuckets.length).toBe(2);
+  expect(offsetBuckets[0].Key).toBe(bucket[2].Key);
 });

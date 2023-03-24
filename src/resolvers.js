@@ -5,7 +5,6 @@ const {
   compareNameDesc,
   offsetLimitLoop,
 } = require("./functions");
-// const { bucket } = require("../mock/bucket");
 const { getBucket } = require("./getBucket");
 
 const bucket = getBucket();

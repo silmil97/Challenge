@@ -18,7 +18,7 @@ const typeDefs = `#graphql
     httpStatusCode: Int!
   }
   type Mutation {
-    putObject(fileName: String!, filePath: String!): PutObject
+    putObject(fileName: String!, body: String!): PutObject
   }
 
 `;

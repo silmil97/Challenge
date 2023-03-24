@@ -51,8 +51,9 @@ const resolvers = {
     },
   },
   Mutation: {
-    putObject: (_, { fileName, filePath }, contextValue, info) => {
-      putObject(fileName, filePath);
+    putObject: async (_, { fileName, body }, contextValue, info) => {
+      const { httpStatusCode } = await putObject(fileName, body);
+      return { httpStatusCode: httpStatusCode };
     },
   },
 };

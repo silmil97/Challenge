@@ -45,7 +45,6 @@ const resolvers = {
       }
       if (args.order.Key == "desc") {
         if (!!args.offset || !!args.limit) {
-          console.log(offsetLimitLoop(args.offset, args.limit, bucket));
           return offsetLimitLoop(args.offset, args.limit, bucket);
         }
         return bucket.then((data) => data.sort(compareNameDesc));

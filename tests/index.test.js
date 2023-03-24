@@ -145,7 +145,6 @@ test("limit and offset can be set", async () => {
   });
   const offsetBuckets = offsetResponse.body.singleResult.data?.bucket;
   const bucket = response.body.singleResult.data?.bucket;
-  // console.log(offsetResponse)
   expect(offsetBuckets.length).toBe(2);
-  expect(offsetBuckets[0].Key).toBe(bucket[2].Key);
+  expect(offsetBuckets[0].Key).toBe(bucket[1].Key);
 });

@@ -35,8 +35,8 @@ const compareNameDesc = (a, b) => {
 };
 
 const offsetLimitLoop = (offset, limit, buckets) => {
-  buckets.then((data) => {
-    const result = [];
+  const result = [];
+  return buckets.then((data) => {
     for (let i = 0; i <= data.length; i++) {
       if (i >= offset || !offset) {
         result.push(data[i]);
@@ -45,7 +45,6 @@ const offsetLimitLoop = (offset, limit, buckets) => {
         break;
       }
     }
-    // console.log(result)
     return result;
   });
 };

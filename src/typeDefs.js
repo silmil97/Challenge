@@ -14,5 +14,12 @@ const typeDefs = `#graphql
   type Query {
     bucket(order: BucketOrderByInput, offset: Int, limit: Int): [Object]
   }
+  type PutObject {
+    httpStatusCode: Int!
+  }
+  type Mutation {
+    putObject(fileName: String!, filePath: String!): PutObject
+  }
+
 `;
 module.exports = { typeDefs };

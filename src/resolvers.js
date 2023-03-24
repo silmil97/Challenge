@@ -6,6 +6,7 @@ const {
   offsetLimitLoop,
 } = require("./functions");
 const { getBucket } = require("./getBucket");
+const { putObject } = require("./putObject");
 
 const bucket = getBucket();
 const resolvers = {
@@ -47,6 +48,11 @@ const resolvers = {
         }
         return bucket.then((data) => data.sort(compareNameDesc));
       }
+    },
+  },
+  Mutation: {
+    putObject: (_, { fileName, filePath }, contextValue, info) => {
+      putObject(fileName, filePath);
     },
   },
 };

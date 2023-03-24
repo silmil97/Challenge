@@ -12,7 +12,6 @@ const bucket = getBucket();
 const resolvers = {
   Query: {
     bucket: (parent, args, contextValue, info) => {
-      // bucket.then(data => console.log(data))
       if (bucket.length <= args.offset) {
         throw new Error("Offset bigger than list");
       }
